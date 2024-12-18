@@ -1,0 +1,46 @@
+Launch 2 VM's
+
+1.docker master
+
+2.docker slave-node (install docker)
+
+On Master Node:
+
+apt-get update -y
+
+apt-get install docker.io -y
+
+docker --version
+
+docker swarm init --advertise-addr=172.31.34.68 (private ip)
+ -copy docker join token and place in docker slave-node
+
+docker node ls
+
+docker service create --name nginx_srv --replicas 3 -p 83:80 nginx
+
+docker ps
+
+docker service ls
+docker service scale nginx_srv=10
+
+docker ps
+
+-------------------------------------------------------------------------------------------
+docker swarm commands : 
+-----------------------
+use this Link : https://docs.docker.com/engine/reference/commandline/swarm/
+
+  ca          Display and rotate the root CA
+  init        Initialize a swarm
+  join        Join a swarm as a node and/or manager
+  join-token  Manage join tokens
+			Eg:docker swarm join-token worker
+  leave       Leave the swarm
+  unlock      Unlock swarm
+  unlock-key  Manage the unlock key
+  update      Update the swarm
+
+
+
+docker swarm join --token SWMTKN-1-09h4c69vpcpdikxopyqlg4qrz1ilkc5t0qn70wltmoxcmb8mmw-a5efbgkskapmanxps9pg9qbe4 13.58.184.233:2377

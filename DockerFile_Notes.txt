@@ -1,0 +1,185 @@
+
+A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.
+
+Using "docker build" users can create an automated build that executes several command-line instructions in succession.
+
+The build context is processed recursively. So, a PATH includes any subdirectories and the URL includes the repository and its submodules. 
+
+The build is run by the Docker daemon, not by the CLI. 
+ 
+it’s best to start with an empty directory as context and keep your Dockerfile in that directory. 
+
+
+Format :
+
+INSTRUCTION arguments
+
+1)The instruction is not case-sensitive.
+2)A Dockerfile must begin with a FROM instruction
+3)The FROM instruction specifies the Parent Image from which you are building.
+4)FROM may only be preceded by one or more ARG instructions, which declare arguments that are used in FROM lines in the Dockerfile.
+5)Docker treats lines that begin with # as a comment,Comment lines are removed before the Dockerfile instructions are executed.
+Parser directives
+6)Parser directives are optional
+7) Parser directives are written as a special type of comment in the form  # directive=value.
+8) all parser directives must be at the very top of a Dockerfile.
+9)Parser directives are not case-sensitive. 
+10)The following parser directives are supported:
+
+	a)syntax
+		# syntax=[remote image reference]
+		EG : 
+			# syntax=docker/dockerfile:1
+			# syntax=docker.io/docker/dockerfile:1
+			# syntax=example.com/user/repo:tag@sha256:abcdef..
+	b)escape
+		# escape=\ (backslash)  or  #escape=` (backtick)
+
+Environment replacement:
+Environment variables (declared with the ENV statement) can also be used in certain instructions as variables to be interpreted by the Dockerfile. 
+
+Environment variables are notated in the Dockerfile either with $variable_name or ${variable_name}. 
+EG : 
+
+ENV abc=hello
+ENV abc=bye def=$abc
+ENV ghi=$abc
+
+.dockerignore file :
+1)Before the docker CLI sends the context to the docker daemon, 
+  it looks for a file named .dockerignore in the root directory of the context.
+
+FROM :
+1)The FROM instruction initializes a new build stage and sets the Base Image for subsequent instructions. 
+2)valid Dockerfile must start with a FROM instruction. 
+3)FROM can appear multiple times within a single Dockerfile to create multiple images or use one build stage as a dependency for another. 
+
+
+RUN:
+
+1)RUN <command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)
+
+2)RUN ["executable", "param1", "param2"] (exec form)
+
+The RUN instruction will execute any commands in a new layer on top of the current image and commit the results. The resulting committed image will be used for the next step in the Dockerfile.
+
+RUN /bin/bash -c 'source $HOME/.bashrc; echo $HOME'
+
+RUN ["/bin/bash", "-c", "echo hello"]
+
+CMD:
+
+The CMD instruction has three forms:
+
+CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+CMD command param1 param2 (shell form)
+
+The main purpose of a CMD is to provide defaults for an executing container. 
+
+FROM ubuntu
+CMD echo "This is a test."
+
+FROM ubuntu
+CMD ["/usr/bin/wc","--help"]
+
+  RUN actually runs a command and commits the result; CMD does not execute anything at build time, but specifies the intended command for the image.
+
+LABEL :
+
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
+
+The LABEL instruction adds metadata to an image. A LABEL is a key-value pair. 
+An image can have more than one label. 
+You can specify multiple labels on a single line.
+
+LABEL "com.example.vendor"="ACME Incorporated"
+
+To view an image’s labels, use the docker image inspect command. You can use the --format option to show just the labels;
+
+eg :  docker image inspect --format='' myimage
+
+MAINTAINER (deprecated) :
+
+MAINTAINER <name>
+
+1)The MAINTAINER instruction sets the Author field of the generated images. 
+
+EXPOSE:
+
+EXPOSE <port> [<port>/<protocol>...]
+
+1)The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime. 
+2)You can specify whether the port listens on TCP or UDP, and the default is TCP if the protocol is not specified.
+3)The EXPOSE instruction does not actually publish the port.
+
+ eg :
+
+ EXPOSE 80/tcp
+ EXPOSE 80/udp
+
+ENV :
+
+The ENV instruction sets the environment variable <key> to the value <value>. 
+This value will be in the environment for all subsequent instructions in the build stage and can be replaced inline in many as well.
+
+ENV MY_NAME="John Doe"
+ENV MY_DOG=Rex\ The\ Dog
+ENV MY_CAT=fluffy
+
+ADD:
+
+ADD [--chown=<user>:<group>] <src>... <dest>
+ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
+
+The ADD instruction copies new files, directories or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+
+COPY:
+
+COPY [--chown=<user>:<group>] <src>... <dest>
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
+
+The COPY instruction copies new files or directories from <src> and adds them to the filesystem of the container at the path <dest>.
+
+ENTRYPOINT :
+
+ENTRYPOINT ["executable", "param1", "param2"]  //(exec form)
+ENTRYPOINT command param1 param2  //(shell  form)
+
+An ENTRYPOINT allows you to configure a container that will run as an executable.
+
+Understand how CMD and ENTRYPOINT interact
+---------------------------------------------
+
+1)Dockerfile should specify at least one of CMD or ENTRYPOINT commands.
+
+2)ENTRYPOINT should be defined when using the container as an executable.
+
+3)CMD should be used as a way of defining default arguments for an ENTRYPOINT command or for executing an ad-hoc command in a container.
+
+4)CMD will be overridden when running the container with alternative arguments.
+
+
+https://docs.docker.com/engine/reference/builder/#entrypoint
+
+===========================================================================
+
+
+From : to pull the base image
+
+Run : To Run Linux or bash commands
+
+CMD : to execute default commands 
+
+ENTRYPOINT : similar to CMD
+
+diff : CMD commands can be replace,but ENTRYPOINT Commands can't 
+         be replace.
+
+WORKDIR : To specify work directory ,Just like cd commands
+
+COPY : to copy files from local system to container 
+
+ADD : similar to copy ,also copies from websitesurl to container
+
+EXPOSE : specifies port number 

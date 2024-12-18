@@ -1,0 +1,81 @@
+A Docker Swarm is a group of either physical or virtual machines that are running the Docker application and that have been configured to join together in a cluster. 
+
+Docker swarm is a container orchestration tool, meaning that it allows the user to manage multiple containers deployed across multiple host machines.
+
+When a machine joins the cluster, it becomes a node in that swarm. 
+ The docker swarm function recognizes three different types of nodes, each with a different role within the docker swarm ecosystem
+
+1)Manager Node:
+The primary function of manager nodes is to assign tasks to worker nodes in the swarm.
+Manager nodes also help to carry out some of the managerial tasks needed to operate the swarm.
+Docker recommends a maximum of seven manager nodes for a swarm.
+
+2)Leader Node:
+When a cluster is established, the Raft consensus algorithm is used to assign one of them as the "leader node". 
+The leader node makes all of the swarm management and task orchestration decisions for the swarm. 
+If the leader node becomes unavailable due to an outage or failure, a new leader node can be elected using the Raft consensus algorithm.
+
+3)Worker Node:
+In a docker swarm with numerous hosts, each worker node functions by receiving and executing the tasks that are allocated to it by manager nodes.
+By default, all manager modes are also worker nodes and are capable of executing tasks when they have the resources available to do so.
+
+----------------------------
+
+Docker commands:
+docker system prune
+The above command is used to remove all the stopped containers, all the networks that are not used, all dangling images and all build caches. It’s one of the most useful docker commands.
+docker info
+docker --help
+docker <command> --help
+docker login
+docker pull <image_name>
+docker run -it -d <image_name>
+docker ps
+docker exec -it <container id> bash
+docker start <container_id>
+
+
+ How will you monitor Docker in production?
+
+Docker provides functionalities like docker stats and docker events to monitor docker in production. Docker stats provides CPU and memory usage of the container. Docker events provide information about the activities taking place in the docker daemon.
+
+Is it a good practice to run Docker compose in production?
+
+Yes, using docker compose in production is the best practical application of docker compose. When you define applications with compose, you can use this compose definition in various production stages like CI, staging, testing, etc.
+
+What changes are expected in your docker compose file while moving it to production?
+
+These are the following changes you need make to your compose file before migrating your application to the production environment:
+Remove volume bindings, so the code stays inside the container and cannot be changed from outside the container.
+Binding to different ports on the host.
+Specify a restart policy
+Add extra services like log aggregator
+
+How many containers can run per host?
+
+There can be as many containers as you wish per host. Docker does not put any restrictions on it. But you need to consider every container needs storage space, CPU and memory which the hardware needs to support. 
+
+
+Can a container restart by itself?
+
+No, it’s not possible for a container to restart by itself. 
+. Is it better to directly remove the container using the rm command or stop the container followed by remove container?
+Its always better to stop the container and then remove it using the remove command.
+
+Will cloud overtake the use of Containerization?
+
+Docker containers are gaining popularity but at the same time, Cloud services are giving a good fight. In my personal opinion, Docker will never be replaced by Cloud. 
+
+Is there a way to identify the status of a Docker container?
+
+There are six possible states a container can be at any given point – Created, Running, Paused, Restarting, Exited, Dead.
+docker ps
+docker ps –a
+Can you remove a paused container from Docker?
+The answer is no. You cannot remove a paused container.
+
+Have you used Kubernetes? If you have, which one would you prefer amongst Docker and Kubernetes?
+
+Be very honest in such questions. If you have used Kubernetes, talk about your experience with Kubernetes and Docker Swarm. 
+
+
